@@ -20,7 +20,7 @@ sequelize
     console.error("  error ");
   });
 
-sequelize.sync({ force: false })
+sequelize.sync({ alter: false })
   .then(() => {
     console.log("✅ Migrated successfully with new changes");
   })

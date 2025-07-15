@@ -1,10 +1,12 @@
 import express from 'express'
 const app=express()
+import authRoute from './route/globals/auth/authRoute'
 
-app.get('/',(req,res)=>{
-res.send("hello world")
+//
+app.use(express.json())
 
-})
+
+app.use('/api',authRoute)
 
 
 export default app
