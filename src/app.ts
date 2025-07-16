@@ -1,12 +1,13 @@
-import express from 'express'
-const app=express()
-import authRoute from './route/globals/auth/authRoute'
-
-//
-app.use(express.json())
+import express from "express";
+const app = express();
+import authRoute from "./route/globals/auth/authRoute";
+import instituteRoute from "./route/institute/instituteRoute";
 
 
-app.use('/api',authRoute)
 
+app.use(express.json());
 
-export default app
+app.use("/api", authRoute);
+app.use("/api", instituteRoute);
+
+export default app;

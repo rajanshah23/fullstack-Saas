@@ -1,6 +1,7 @@
 import { Sequelize, DataType } from "sequelize-typescript";
 import envConfig from "../config/config";
 
+
 const sequelize = new Sequelize({
   database: envConfig.dbname, //database  ko name
   username: envConfig.dbusername, // database ko username by default root
@@ -20,7 +21,7 @@ sequelize
     console.error("  error ");
   });
 
-sequelize.sync({ alter: false })
+sequelize.sync({ alter: true })
   .then(() => {
     console.log("✅ Migrated successfully with new changes");
   })
