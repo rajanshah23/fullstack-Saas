@@ -7,4 +7,5 @@ export interface IExtendedRequest extends Request {
     email: string;
     username: string | null;
   };
+  instituteNumber?:string | number
 }

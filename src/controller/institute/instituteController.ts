@@ -62,7 +62,7 @@ class instituteController {
     );
 
     //to create user institute table jaha chai user ley k k institute haru cretae garyo saabaiko number basnu  paryo
-//user ko history yaha xa ra tesko current history hernu paryo vane hamley user ma hernu parxa jaha teskoo institute number hunxa  eg:
+    //user ko history yaha xa ra tesko current history hernu paryo vane hamley user ma hernu parxa jaha teskoo institute number hunxa  eg:
     await sequelize.query(`CREATE TABLE  IF NOT EXISTS user_institute(
         id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
         userId VARCHAR(256) REFERENCES user(id),                                     
@@ -95,15 +95,50 @@ class instituteController {
         }
       );
     }
-
+    req.instituteNumber = instituteNumber;
     next();
   }
 
+  static async createTeacher(
+    req: IExtendedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    const instituteNumber = req.instituteNumber;
+    await sequelize.query(`CREATE TABLE IF NOT EXISTS teacher_${instituteNumber}(
+        id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+        teacherName VARCHAR(256) NOT NULL,
+        teacherEmail VARCHAR(256) NOT NULL UNIQUE,
+        teacherPhoneNumber VARCHAR(256) NOT NULL UNIQUE,
+        teacherAddress VARCHAR(256) NOT NULL
+      )`);
+    next();
+  }
 
-  
-  static async createTeacher(req: Request, res: Response) {
-    const { teacherName, teacherEmail, teacherPhoneNumber, teacherAddress } =
-      req.body;
+  static async createStudent(req: IExtendedRequest,res: Response,next: NextFunction
+  ) {
+    const instituteNumber = req.instituteNumber;
+    await sequelize.query(`CREATE TABLE IF NOT EXISTS student_${instituteNumber}(
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    studentName VARCHAR(256) NOT NULL,
+    studentEmail VARCHAR(256) NOT NULL UNIQUE,
+    studentPhoneNumber VARCHAR(256) NOT NULL UNIQUE,
+    studentAddress VARCHAR(256) NOT NULL
+    )`);
+    next();
+  }
+
+  static async createCourse(req: IExtendedRequest, res: Response) {
+    const instituteNumber = req.instituteNumber
+    await sequelize.query(`CREATE TABLE IF NOT EXISTS courese_${instituteNumber}(
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    courseName VARCHAR(256) NOT NULL UNIQUE,
+    coursePrice VARCHAR(256) NOT NULL
+    )`);
+    res.status(201).json({
+      message: "Institute created successfully",
+      instituteNumber
+    });
   }
 }
 export default instituteController;
