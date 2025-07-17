@@ -21,7 +21,7 @@ sequelize
     console.error("  error ");
   });
 
-sequelize.sync({ alter: true })
+sequelize.sync({ alter: false })
   .then(() => {
     console.log("✅ Migrated successfully with new changes");
   })

@@ -1,16 +1,18 @@
 import sequelize from "../../database/connection";
-import {Request,Response,NextFunction} from 'express'
+import { Request, Response, NextFunction } from "express";
 import generateRandomNumber from "../../services/generateRandomNumber";
 import { IExtendedRequest } from "../../types/types";
- 
+import User from "../../database/models/userModel";
+import { Sequelize } from "sequelize";
 
- 
-
- 
 class instituteController {
-    static async createInstitute(req: IExtendedRequest, res: Response){
-      console.log(req.user,"Name from Middleware")
-    console.log("trigger")
+  static async createInstitute(
+    req: IExtendedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    console.log(req.user, "Name from Middleware");
+    console.log("trigger");
     const {
       instituteName,
       instituteEmail,
@@ -26,13 +28,14 @@ class instituteController {
       !instituteAddress
     ) {
       res.status(400).json({
-        message: "Please provide all the details",
+        message:
+          "Please provide instituteName,instituteEmail,institutePhoneNumber,instituteAddress",
       });
       return;
     }
 
     //aayo vane --institute create garna paryo --->institute_123445 course_123435
-const instituteNumber= generateRandomNumber()
+    const instituteNumber = generateRandomNumber();
     await sequelize.query(`CREATE TABLE  IF NOT EXISTS institute_${instituteNumber}(
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
      instituteName VARCHAR(256) NOT NULL,
@@ -44,10 +47,63 @@ const instituteNumber= generateRandomNumber()
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )`);
-    res.status(201).json({ message: "Institute table created successfully." });
+    await sequelize.query(
+      `INSERT INTO institute_${instituteNumber}(instituteName,instituteEmail,institutePhoneNumber,instituteAddress,institutePanNo,instituteVatNo) VALUES(?,?,?,?,?,?)`,
+      {
+        replacements: [
+          instituteName,
+          instituteEmail,
+          institutePhoneNumber,
+          instituteAddress,
+          institutePanNo,
+          instituteVatNo,
+        ],
+      }
+    );
+
+    //to create user institute table jaha chai user ley k k institute haru cretae garyo saabaiko number basnu  paryo
+//user ko history yaha xa ra tesko current history hernu paryo vane hamley user ma hernu parxa jaha teskoo institute number hunxa  eg:
+    await sequelize.query(`CREATE TABLE  IF NOT EXISTS user_institute(
+        id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+        userId VARCHAR(256) REFERENCES user(id),                                     
+        instituteNumber INT UNIQUE
+     )`);
+
+    //  if(req.user){
+    //   const user=await User.findByPk(req.user.id)
+    //   user?.currentInstituteNumber=instituteNumber
+    //   await user?.save()
+    //  }
+
+    if (req.user) {
+      await sequelize.query(
+        `INSERT INTO user_institute(userId,instituteNumber) VALUES(?,?)`,
+        {
+          replacements: [req.user.id, instituteNumber],
+        }
+      );
+
+      await User.update(
+        {
+          currentInstituteNumber: instituteNumber,
+          role: "institute",
+        },
+        {
+          where: {
+            id: req.user.id,
+          },
+        }
+      );
+    }
+
+    next();
   }
-  static async createTeacher(req: Request, res: Response){
-    const {teacherName,teacherEmail,teacherPhoneNumber,teacherAddress}=req.body
+
+
+  
+  static async createTeacher(req: Request, res: Response) {
+    const { teacherName, teacherEmail, teacherPhoneNumber, teacherAddress } =
+      req.body;
   }
 }
-export default instituteController
+export default instituteController;

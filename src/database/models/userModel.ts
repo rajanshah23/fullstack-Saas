@@ -30,6 +30,11 @@ class User extends Model {
   declare password: string;
 
   @Column({
+    type:DataType.STRING,
+  })
+  declare currentInstituteNumber:string;
+
+  @Column({
     type: DataType.ENUM("student", "teacher", "institute", "super-admin"),
     defaultValue: "student",
   })
