@@ -2,10 +2,7 @@ import { Request } from "express";
 
 export interface IExtendedRequest extends Request {
   user?: {
-    id:string
-    role:string,
-    email: string;
-    username: string | null;
+    id: string;
+    currentInstituteNumber?: string | number | null;
   };
-  instituteNumber?:string | number
 }

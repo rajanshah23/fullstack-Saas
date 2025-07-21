@@ -11,8 +11,6 @@ class instituteController {
     res: Response,
     next: NextFunction
   ) {
-    console.log(req.user, "Name from Middleware");
-    console.log("trigger");
     const {
       instituteName,
       instituteEmail,
@@ -62,7 +60,7 @@ class instituteController {
     );
 
     //to create user institute table jaha chai user ley k k institute haru cretae garyo saabaiko number basnu  paryo
-    //user ko history yaha xa ra tesko current history hernu paryo vane hamley user ma hernu parxa jaha teskoo institute number hunxa  eg:
+    //user ko history yaha xa ra tesko current history hernu paryo vane hamley user ma hernu parxa jaha teskoo institute number hunxa
     await sequelize.query(`CREATE TABLE  IF NOT EXISTS user_institute(
         id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
         userId VARCHAR(256) REFERENCES user(id),                                     
@@ -95,7 +93,10 @@ class instituteController {
         }
       );
     }
-    req.instituteNumber = instituteNumber;
+     if(req.user){
+              req.user.currentInstituteNumber = instituteNumber  
+          }
+        
     next();
   }
 
@@ -104,40 +105,60 @@ class instituteController {
     res: Response,
     next: NextFunction
   ) {
-    const instituteNumber = req.instituteNumber;
+    const instituteNumber =req.user?.currentInstituteNumber
     await sequelize.query(`CREATE TABLE IF NOT EXISTS teacher_${instituteNumber}(
         id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
         teacherName VARCHAR(256) NOT NULL,
         teacherEmail VARCHAR(256) NOT NULL UNIQUE,
         teacherPhoneNumber VARCHAR(256) NOT NULL UNIQUE,
-        teacherAddress VARCHAR(256) NOT NULL
+        teacherAddress VARCHAR(256) NOT NULL,
+        teacherExpertise VARCHAR(255),
+        joinedDate DATE, 
+        salary VARCHAR(100),
+        teacherPhoto VARCHAR(255), 
+        teacherPassword VARCHAR(255),
+        createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+        updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
       )`);
     next();
   }
 
-  static async createStudent(req: IExtendedRequest,res: Response,next: NextFunction
+  static async createStudent(
+    req: IExtendedRequest,
+    res: Response,
+    next: NextFunction
   ) {
-    const instituteNumber = req.instituteNumber;
+    const instituteNumber = req.user?.currentInstituteNumber
     await sequelize.query(`CREATE TABLE IF NOT EXISTS student_${instituteNumber}(
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     studentName VARCHAR(256) NOT NULL,
     studentEmail VARCHAR(256) NOT NULL UNIQUE,
     studentPhoneNumber VARCHAR(256) NOT NULL UNIQUE,
-    studentAddress VARCHAR(256) NOT NULL
+    studentAddress VARCHAR(256) NOT NULL,
+    enrolledDate DATE, 
+    studentImage VARCHAR(255),
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
     )`);
     next();
   }
 
   static async createCourse(req: IExtendedRequest, res: Response) {
-    const instituteNumber = req.instituteNumber
-    await sequelize.query(`CREATE TABLE IF NOT EXISTS courese_${instituteNumber}(
+    const instituteNumber = req.user?.currentInstituteNumber
+    await sequelize.query(`CREATE TABLE IF NOT EXISTS course_${instituteNumber}(
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     courseName VARCHAR(256) NOT NULL UNIQUE,
-    coursePrice VARCHAR(256) NOT NULL
+    coursePrice VARCHAR(256) NOT NULL,
+    courseDuration VARCHAR(100) NOT NULL, 
+    courseLevel ENUM('beginner','intermediate','advance') NOT NULL, 
+    courseThumbnail VARCHAR(200),
+    courseDescription TEXT, 
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )`);
     res.status(201).json({
       message: "Institute created successfully",
-      instituteNumber
+      instituteNumber,
     });
   }
 }

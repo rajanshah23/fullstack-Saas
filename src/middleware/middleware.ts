@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
- 
 import { IExtendedRequest } from "../types/types";
 import User from "../database/models/userModel";
 
@@ -24,7 +23,9 @@ class Middleware {
         res.status(403).json({ messgae: "Invalid token" });
       } else {
         //double verification
-        const userData = await User.findByPk(success.id);
+        const userData = await User.findByPk(success.id,{
+          attributes:['id','currentInstituteNumber' ]
+        });
         if (!userData) {
           res.status(403).json({
             message: "No user with that is, Invalid token",
