@@ -13,9 +13,9 @@ class courseController {
       coursePrice,
       courseDuration,
       courseLevel,
-      courseThumbnail,
       courseDescription,
     } = req.body;
+    const courseThumbnail=req.file? req.file.filename : null
     if (
       !courseName ||
       !coursePrice ||
@@ -30,7 +30,7 @@ class courseController {
       });
       return;
     }
- 
+ console.log(req.file)
      await sequelize.query(
       `INSERT INTO course_${instituteNumber}(
       courseName,
