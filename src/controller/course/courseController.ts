@@ -6,6 +6,9 @@ import { IExtendedRequest } from "../../types/types";
 
 class courseController {
   static async createCourse(req: IExtendedRequest, res: Response) {
+     console.log('Request body:', req.body);
+  console.log('Request file:', req.file);
+  console.log('User info:', req.user);
     const instituteNumber = req.user?.currentInstituteNumber;
  
     const {
@@ -15,7 +18,7 @@ class courseController {
       courseLevel,
       courseDescription,
     } = req.body;
-    const courseThumbnail=req.file? req.file.filename : null
+    const courseThumbnail=req.file? req.file.path : null
     if (
       !courseName ||
       !coursePrice ||
@@ -30,7 +33,7 @@ class courseController {
       });
       return;
     }
- console.log(req.file)
+ console.log('Cloudinary file info:', req.file)
      await sequelize.query(
       `INSERT INTO course_${instituteNumber}(
       courseName,

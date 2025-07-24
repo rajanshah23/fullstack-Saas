@@ -20,6 +20,7 @@ class Middleware {
     //verify garne
     jwt.verify(token, "hahaha", async (error,success:any) => {
       if (error) {
+        console.log("JWT Error:", error.message);
         res.status(403).json({ messgae: "Invalid token" });
       } else {
         //double verification
@@ -27,7 +28,7 @@ class Middleware {
           attributes:['id','currentInstituteNumber' ]
         });
         if (!userData) {
-          res.status(403).json({
+         return res.status(403).json({
             message: "No user with that is, Invalid token",
           });
         } else {
