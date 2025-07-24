@@ -12,7 +12,7 @@ const router: Router = express.Router();
 router
   .route("/course")
   .post(Middleware.isLoggedIn,upload.single("courseThumbnail"),HandleError(courseController.createCourse))
-  .get(HandleError(courseController.getAllCourse));
+  .get(Middleware.isLoggedIn,HandleError(courseController.getAllCourse));
 
 router
   .route("/:id")

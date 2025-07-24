@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import generateRandomNumber from "../../services/generateRandomNumber";
 import { IExtendedRequest } from "../../types/types";
 import User from "../../database/models/userModel";
-import { Sequelize } from "sequelize";
+import categories from "../../../seed";
 
 class instituteController {
   static async createInstitute(
@@ -93,10 +93,10 @@ class instituteController {
         }
       );
     }
-     if(req.user){
-              req.user.currentInstituteNumber = instituteNumber  
-          }
-        
+    if (req.user) {
+      req.user.currentInstituteNumber = instituteNumber;
+    }
+
     next();
   }
 
@@ -105,7 +105,7 @@ class instituteController {
     res: Response,
     next: NextFunction
   ) {
-    const instituteNumber =req.user?.currentInstituteNumber
+    const instituteNumber = req.user?.currentInstituteNumber;
     await sequelize.query(`CREATE TABLE IF NOT EXISTS teacher_${instituteNumber}(
         id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
         teacherName VARCHAR(256) NOT NULL,
@@ -128,7 +128,7 @@ class instituteController {
     res: Response,
     next: NextFunction
   ) {
-    const instituteNumber = req.user?.currentInstituteNumber
+    const instituteNumber = req.user?.currentInstituteNumber;
     await sequelize.query(`CREATE TABLE IF NOT EXISTS student_${instituteNumber}(
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     studentName VARCHAR(256) NOT NULL,
@@ -143,8 +143,34 @@ class instituteController {
     next();
   }
 
+  static async createCategory(
+    req: IExtendedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    const instituteNumber = req.user?.currentInstituteNumber;
+    await sequelize.query(`CREATE TABLE IF NOT EXISTS category_${instituteNumber}(
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    categoryName VARCHAR(255) NOT NULL,
+    categoryDescription VARCHAR(255) NOT NULL,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    )`);
+
+
+    categories.forEach(async function (category) {
+      await sequelize.query(
+        `INSERT INTO category_${instituteNumber}(categoryName,categoryDescription) VALUES(?,?)`,
+        {
+          replacements: [category.categoryName,category.categoryDescription],
+        }
+      );
+    });
+    next();
+  }
+
   static async createCourse(req: IExtendedRequest, res: Response) {
-    const instituteNumber = req.user?.currentInstituteNumber
+    const instituteNumber = req.user?.currentInstituteNumber;
     await sequelize.query(`CREATE TABLE IF NOT EXISTS course_${instituteNumber}(
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     courseName VARCHAR(256) NOT NULL UNIQUE,

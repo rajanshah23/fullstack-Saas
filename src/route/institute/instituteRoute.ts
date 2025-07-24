@@ -11,6 +11,7 @@ router
     HandleError(instituteController.createInstitute),
     HandleError(instituteController.createTeacher),
     HandleError(instituteController.createStudent),
+    HandleError(instituteController.createCategory),
     HandleError(instituteController.createCourse)
   );
 
