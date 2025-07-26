@@ -151,7 +151,7 @@ class instituteController {
     const instituteNumber = req.user?.currentInstituteNumber;
     await sequelize.query(`CREATE TABLE IF NOT EXISTS category_${instituteNumber}(
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    categoryName VARCHAR(255) NOT NULL,
+    categoryName VARCHAR(255) NOT NULL UNIQUE,
     categoryDescription VARCHAR(255) NOT NULL,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
