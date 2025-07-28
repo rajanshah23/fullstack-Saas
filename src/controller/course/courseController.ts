@@ -19,6 +19,7 @@ class courseController {
       courseDuration,
       courseLevel,
       courseDescription,
+      categoryId,
     } = req.body;
     const courseThumbnail = req.file ? req.file.path : null
     if (
@@ -27,11 +28,12 @@ class courseController {
       !courseDuration ||
       !courseLevel ||
       !courseThumbnail ||
-      !courseDescription
+      !courseDescription ||
+      !categoryId
     ) {
       res.status(400).json({
         message:
-          "Please provide courseName, coursePrice,courseDuration,courseLevel,courseThumbnail,courseDescription",
+          "Please provide courseName, coursePrice,courseDuration,courseLevel,courseThumbnail,courseDescription,categoryId",
       });
       return;
     }
@@ -43,8 +45,8 @@ class courseController {
       courseDuration,
       courseLevel,
       courseDescription,
-      courseThumbnail
-    ) VALUES(?,?,?,?,?,?)`,
+      courseThumbnail,categoryId
+    ) VALUES(?,?,?,?,?,?,?)`,
       {
         type: QueryTypes.INSERT,
         replacements: [
@@ -53,7 +55,8 @@ class courseController {
           courseDuration,
           courseLevel,
           courseDescription,
-          courseThumbnail || "https://nepal.com/image/hello.png"
+          courseThumbnail || "https://nepal.com/image/hello.png",
+          categoryId,
         ],
       }
     );
@@ -88,9 +91,9 @@ class courseController {
 
   static async getAllCourse(req: IExtendedRequest, res: Response) {
     const instituteNumber = req.user?.currentInstituteNumber
-    const courses = await sequelize.query(`SELECT * FROM course_${instituteNumber}`, { type: QueryTypes.SELECT })
+    const courses = await sequelize.query(`SELECT * FROM course_${instituteNumber} JOIN category_${instituteNumber} ON course_${instituteNumber}.courseId=category_${instituteNumber}.id `, { type: QueryTypes.SELECT })
     res.status(200).json({
-      message: "Course Fetched",
+      message: "Course Fetched Successfully",
       data: courses || []
     })
   }
