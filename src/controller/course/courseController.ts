@@ -3,7 +3,6 @@ import { Response } from "express";
 import sequelize from "../../database/connection";
 import { IExtendedRequest } from "../../types/types";
 import { QueryTypes } from "sequelize";
- 
 
 
 class courseController {
@@ -13,13 +12,7 @@ class courseController {
     console.log('User info:', req.user);
     const instituteNumber = req.user?.currentInstituteNumber;
 
-    const {
-      courseName,
-      coursePrice,
-      courseDuration,
-      courseLevel,
-      courseDescription,
-      categoryId,
+    const {courseName,coursePrice,courseDuration,courseLevel,courseDescription,categoryId,
     } = req.body;
     const courseThumbnail = req.file ? req.file.path : null
     if (

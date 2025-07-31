@@ -115,8 +115,9 @@ class instituteController {
         teacherExpertise VARCHAR(255),
         joinedDate DATE, 
         salary VARCHAR(100),
-        teacherPhoto VARCHAR(255), 
+        teacherImage VARCHAR(255), 
         teacherPassword VARCHAR(255),
+        courseId VARCHAR(100) REFERENCES course_${instituteNumber}(id),
         createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
         updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
       )`);
@@ -179,10 +180,12 @@ class instituteController {
     courseLevel ENUM('beginner','intermediate','advance') NOT NULL, 
     courseThumbnail VARCHAR(200),
     courseDescription TEXT,
+    teacherId VARCHAR(36) REFERENCES teacher_${instituteNumber} (id),
     categoryId VARCHAR(36) NOT NULL REFERENCES course_${instituteNumber} (id),
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )`);
+ 
     res.status(201).json({
       message: "Institute created successfully",
       instituteNumber,
