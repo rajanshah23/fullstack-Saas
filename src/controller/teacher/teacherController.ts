@@ -4,6 +4,8 @@ import { IExtendedRequest } from "../../types/types";
 import sequelize from "../../database/connection";
 import { QueryTypes } from "sequelize";
 import generateRandomPassword from "../../services/generateRandomPassword";
+import sendMail from "../../services/sendMail";
+import { generateTeacherWelcomeEmail } from "../../utils/generateTeacherWelcomeEmail ";
 
 class teacherController{
     static async createTeacher(req: IExtendedRequest, res: Response) {
@@ -32,6 +34,46 @@ await sequelize.query(`UPDATE course_${instituteNumber} SET teacherId=? WHERE id
     type:QueryTypes.UPDATE,
     replacements:[teacherData[0].id,courseId]
 })
+  // Fetching  course information
+const [course]: any = await sequelize.query(
+      `SELECT   courseName,
+      coursePrice,
+      courseDuration,
+      courseLevel,
+      courseDescription,
+      courseThumbnail FROM course_${instituteNumber} WHERE id = ?`,
+      {
+        type: QueryTypes.SELECT,
+        replacements: [courseId],
+      }
+    );
+
+//send mail function goes here
+ const emailHtml = generateTeacherWelcomeEmail({
+     teacherName,
+  instituteNumber: String(instituteNumber),
+  tempPassword: data.plainVersion,
+  course: {
+    courseName: course.courseName,
+    coursePrice: course.coursePrice,
+    courseDuration: course.courseDuration,
+    courseLevel: course.courseLevel,
+    courseDescription: course.courseDescription,
+    courseThumbnail: course.courseThumbnail,
+  },
+  courseLink: `https://yourplatform.com/courses/view?id=${courseId}&authToken=xyz`,
+syllabusLink: `https://yourplatform.com/syllabus/download?id=${courseId}&token=abc`,
+
+});
+ 
+
+await sendMail({
+  to: teacherEmail,                         
+  subject: "Welcome to Fullstack-SaaS project",
+  html: emailHtml
+});
+
+ 
 
 res.status(200).json({
     message:"Teacher created sucssfully"
