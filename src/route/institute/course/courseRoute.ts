@@ -1,11 +1,11 @@
 import express, { Router } from "express";
-import Middleware from "../../middleware/middleware";
-import HandleError from "../../services/asyncErrorHandler";
-import courseController from "../../controller/course/courseController";
+import Middleware from "../../../middleware/middleware";
+import HandleError from "../../../services/asyncErrorHandler";
+import courseController from "../../../controller/institute/course/courseController";
 // import {multer,storage} from './../../middleware/multerMiddleware'
 
 import multer from  'multer'
-import { cloudinary,storage } from "../../services/cloudinaryConfig";
+import { cloudinary,storage } from "../../../services/cloudinaryConfig";
 const upload=multer({storage})
 const router: Router = express.Router();
 

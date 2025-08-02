@@ -2,6 +2,7 @@ import { Response, Request } from "express";
 import User from "../../../database/models/userModel";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import generateJwtToken from "../../../services/generateJwtToken";
 
 class AuthController {
   static async registerUser(req: Request, res: Response) {
@@ -67,9 +68,7 @@ class AuthController {
       const isPasswordMatched =  await bcrypt.compare(password, data[0].password);
       if (isPasswordMatched) {
         //password milyo vane token generation tira jane
-        const token = jwt.sign({ id: data[0].id }, "hahaha", {
-          expiresIn: "30d",
-        });
+        const token=generateJwtToken({id:data[0].id})
         res.cookie("jwtToken", token);
          return res.status(200).json({ message: "Login successful", token });
       } else {

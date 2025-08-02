@@ -1,11 +1,11 @@
 
 import { Response } from "express";
-import { IExtendedRequest } from "../../types/types";
-import sequelize from "../../database/connection";
+import { IExtendedRequest } from "../../../types/types";
+import sequelize from "../../../database/connection";
 import { QueryTypes } from "sequelize";
-import generateRandomPassword from "../../services/generateRandomPassword";
-import sendMail from "../../services/sendMail";
-import { generateTeacherWelcomeEmail } from "../../utils/generateTeacherWelcomeEmail ";
+import generateRandomPassword from "../../../services/generateRandomPassword";
+import sendMail from "../../../services/sendMail";
+import { generateTeacherWelcomeEmail } from "../../../utils/generateTeacherWelcomeEmail ";
 
 class teacherController{
     static async createTeacher(req: IExtendedRequest, res: Response) {

@@ -1,6 +1,6 @@
 import { Response } from "express";
-import { IExtendedRequest } from "../../types/types";
-import sequelize from "../../database/connection";
+import { IExtendedRequest } from "../../../types/types";
+import sequelize from "../../../database/connection";
 import { QueryTypes } from "sequelize";
 
 class categoryController {

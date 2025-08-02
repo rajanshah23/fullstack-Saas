@@ -1,7 +1,7 @@
 import express, { Router } from "express";
-import Middleware from "../../middleware/middleware";
-import HandleError from "../../services/asyncErrorHandler";
-import categoryController from "../../controller/category/categoryController";
+import Middleware from "../../../middleware/middleware";
+import HandleError from "../../../services/asyncErrorHandler";
+import categoryController from "../../../controller/institute/category/categoryController";
 
 const router:Router=express.Router()
 

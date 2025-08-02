@@ -1,7 +1,7 @@
 
 import { Response } from "express";
-import sequelize from "../../database/connection";
-import { IExtendedRequest } from "../../types/types";
+import sequelize from "../../../database/connection";
+import { IExtendedRequest } from "../../../types/types";
 import { QueryTypes } from "sequelize";
 
 
